@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Form, Input, Button, Card, Row, Col, Typography, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { login } from './auth';
+import RootLayout from '../components/RootLayout';
 
 const { Title } = Typography;
 
@@ -16,7 +17,6 @@ export interface RegisterForm {
 const Register: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
-  const navigate = useNavigate();
 
   const onFinish = async (values: RegisterForm) => {
     console.log('Received values of form: ', values);
@@ -47,8 +47,9 @@ const Register: React.FC = () => {
               type: 'success',
               content: '登录成功',
           });
-    
-          setTimeout(() => {navigate('/')}, 1500);
+
+          localStorage.setItem('token', loginRresponse.token);
+          setTimeout(() => {window.location.assign("/")}, 1500);
         } else {
           messageApi.open({
               type: 'error',
@@ -79,10 +80,10 @@ const Register: React.FC = () => {
   };
 
   return (
-    <>
+    <RootLayout>
       {contextHolder}
-      <Row justify="center" align="middle" style={{ minHeight: '100vh' }}>
-        <Col xs={20} sm={16} md={12} lg={8}>
+      <Row justify="center" align="middle" style={{ minHeight: "100vh" }}>
+        <Col xs={20} sm={16} md={12} lg={6}>
             <Card>
             <Title level={2} style={{ textAlign: 'center' }}>用户注册</Title>
             <Form
@@ -148,7 +149,7 @@ const Register: React.FC = () => {
             </Card>
         </Col>
       </Row>
-    </>
+    </RootLayout>
   );
 };
 

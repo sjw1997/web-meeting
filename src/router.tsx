@@ -1,19 +1,21 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter } from "react-router-dom";
 import App from "./App.tsx";
 import Login from "./user/Login.tsx";
 import Register from "./user/Register.tsx";
+import ProtectedRoute from "./user/ProtectedRoute.tsx";
+import PublicRoute from "./user/PublicRoute.tsx";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <ProtectedRoute><App /></ProtectedRoute>,
   },
   {
     path: "/login",
-    element: <Login />,
+    element: <PublicRoute><Login /></PublicRoute>,
   },
   {
     path: "/register",
-    element: <Register />,
+    element: <PublicRoute><Register /></PublicRoute>,
   },
 ]);

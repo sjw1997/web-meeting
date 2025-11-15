@@ -1,0 +1,25 @@
+.meeting-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 3em;
+  padding: 0.5em;
+}
+.meeting-logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .meeting-logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
