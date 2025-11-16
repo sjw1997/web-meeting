@@ -83,7 +83,7 @@ const Register: React.FC = () => {
   return (
     <RootLayout>
       {contextHolder}
-      <Row justify="center" align="middle" style={{ minHeight: '100vh' }}>
+      <Row justify="center" align="middle" style={{ height: '80vh' }}>
         <Col xs={20} sm={16} md={12} lg={8}>
             <Card>
             <Title level={2} style={{ textAlign: 'center' }}>用户注册</Title>
