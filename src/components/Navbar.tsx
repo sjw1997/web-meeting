@@ -1,5 +1,5 @@
-import React, { useState } from 'react'; // 补充导入 useState
-import { Layout, Menu, type MenuProps } from 'antd'; // 导入 MenuProps 和 MenuItem 类型
+import React, { useState } from 'react';
+import { Layout, Menu, type MenuProps } from 'antd';
 import { 
   UserOutlined, ToolOutlined,
   UsergroupDeleteOutlined, VideoCameraOutlined,
@@ -8,7 +8,7 @@ import {
 import meetingLogo from '../assets/meeting.png';
 import '../css/Navbar.css';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../user/auth';
+import { useAuth } from '../auth/auth';
 const { Header } = Layout;
 
 type MenuItem = Required<MenuProps>['items'][number];
