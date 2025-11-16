@@ -3,6 +3,7 @@ import { Form, Input, Button, Card, Row, Col, Typography, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import { login, type LoginForm } from './auth';
+import RootLayout from '../components/RootLayout';
 
 const { Title } = Typography;
 
@@ -23,6 +24,7 @@ const Login: React.FC = () => {
           content: '登录成功',
       });
 
+      localStorage.setItem('token', response.token);
       setTimeout(() => {navigate('/')}, 1500);
     } else {
       messageApi.open({
@@ -34,7 +36,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <>
+    <RootLayout>
       {contextHolder}
       <Row justify="center" align="middle" style={{ minHeight: '100vh' }}>
         <Col xs={20} sm={16} md={12} lg={8}>
@@ -72,7 +74,7 @@ const Login: React.FC = () => {
             </Card>
         </Col>
       </Row>
-    </>
+    </RootLayout>
   );
 };
 

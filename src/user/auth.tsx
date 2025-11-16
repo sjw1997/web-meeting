@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { createContext, useContext } from 'react';
 
 export interface LoginForm {
   username: string;
@@ -10,6 +11,23 @@ export interface LoginResposne {
     message: string;
     token: string;
 }
+
+export interface AuthContextType {
+  isLoading: boolean;
+  isAuthenticated: boolean;
+  userId: string;
+  username: string;
+}
+
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+}
+
 
 export async function login(values: LoginForm): Promise<LoginResposne> {
   try {

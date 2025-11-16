@@ -4,6 +4,7 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { login } from './auth';
+import RootLayout from '../components/RootLayout';
 
 const { Title } = Typography;
 
@@ -48,6 +49,7 @@ const Register: React.FC = () => {
               content: '登录成功',
           });
     
+          localStorage.setItem('token', loginRresponse.token);
           setTimeout(() => {navigate('/')}, 1500);
         } else {
           messageApi.open({
@@ -79,7 +81,7 @@ const Register: React.FC = () => {
   };
 
   return (
-    <>
+    <RootLayout>
       {contextHolder}
       <Row justify="center" align="middle" style={{ minHeight: '100vh' }}>
         <Col xs={20} sm={16} md={12} lg={8}>
@@ -148,7 +150,7 @@ const Register: React.FC = () => {
             </Card>
         </Col>
       </Row>
-    </>
+    </RootLayout>
   );
 };
 
