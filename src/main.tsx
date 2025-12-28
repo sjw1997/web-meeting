@@ -4,7 +4,7 @@ import './index.css'
 import { RouterProvider } from 'react-router'
 import { router } from './router'
 import '@ant-design/v5-patch-for-react-19';
-import AuthProvider from './user/AuthProvider'
+import AuthProvider from './auth/AuthProvider'
 
 
 createRoot(document.getElementById('root')!).render(

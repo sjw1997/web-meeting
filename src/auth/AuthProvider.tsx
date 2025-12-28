@@ -16,6 +16,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     const response = await axios.post('/api/verifyToken', {}, {
                         headers: { Authorization: `Bearer ${token}` },
                     });
+                    console.log(response.data);
                     if (response.data.success) {
                         setIsAuthenticated(true);
                         setUserId(response.data.userId);

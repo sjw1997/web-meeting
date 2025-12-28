@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Input, Button, Card, Row, Col, Typography, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { login } from './auth';
 import RootLayout from '../components/RootLayout';
@@ -17,7 +17,6 @@ export interface RegisterForm {
 const Register: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
-  const navigate = useNavigate();
 
   const onFinish = async (values: RegisterForm) => {
     console.log('Received values of form: ', values);
@@ -50,7 +49,7 @@ const Register: React.FC = () => {
           });
     
           localStorage.setItem('token', loginRresponse.token);
-          setTimeout(() => {navigate('/')}, 1500);
+          setTimeout(() => {window.location.replace("/");}, 1500);
         } else {
           messageApi.open({
               type: 'error',

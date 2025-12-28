@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Input, Button, Card, Row, Col, Typography, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { login, type LoginForm } from './auth';
 import RootLayout from '../components/RootLayout';
 
@@ -11,7 +11,6 @@ const { Title } = Typography;
 const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
-  const navigate = useNavigate();
 
   const onFinish = async (values: LoginForm) => {
     console.log('Received values of form: ', values);
@@ -25,7 +24,7 @@ const Login: React.FC = () => {
       });
 
       localStorage.setItem('token', response.token);
-      setTimeout(() => {navigate('/')}, 1500);
+      setTimeout(() => {window.location.replace('/');}, 1500);
     } else {
       messageApi.open({
           type: 'error',
