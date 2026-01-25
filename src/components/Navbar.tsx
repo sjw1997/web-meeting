@@ -16,16 +16,156 @@ import {
   LogoutOutlined,
   FileTextOutlined,
   CheckCircleOutlined,
-  VideoCameraAddOutlined
+  VideoCameraAddOutlined,
+  UsergroupAddOutlined,
+  ApartmentOutlined,
+  IdcardOutlined,
+  UserSwitchOutlined,
+  BankOutlined,
+  DesktopOutlined,
+  SettingOutlined,
+  SecurityScanOutlined,
+  SmileOutlined,
+  ScheduleOutlined,
+  ReloadOutlined,
+  BarChartOutlined
 } from '@ant-design/icons';
 import { useAuth } from "../auth/auth";
 
 const Navbar: React.FC = () => {
     type MenuItem = Required<MenuProps>['items'][number];
 
-    const { isAuthenticated, username } = useAuth()
+    const { isAuthenticated, username, isAdmin } = useAuth()
+    const [ isNoramlMode, setIsNoramlMode ] = useState(true);
 
-    const items: MenuItem[] = [
+    const userMenuItem = {
+        label: username,
+        key: "username",
+        icon: <UserOutlined />,
+        children: [
+          ...(isAdmin ? [
+            {
+              label: "切换模式",
+              key: "switchMode",
+              icon: <ToolOutlined />,
+              children: [
+                {
+                  label: "用户模式",
+                  key: "normalMode",
+                  icon: <UserOutlined />
+                },
+                {
+                  label: "管理员模式",
+                  key: "adminMode",
+                  icon: <TeamOutlined />
+                }
+              ]
+            }
+          ] : []),
+          {
+            label: "退出",
+            key: "logout",
+            icon: <LogoutOutlined />
+          }
+        ]
+      };
+
+    const adminModelItems: MenuItem[] = [
+      {
+        label: "用户管理",
+        key: "userManagement",
+        icon: <UsergroupAddOutlined />,
+        children: [
+          {
+            label: "部门管理",
+            key: "departmentManagement",
+            icon: <ApartmentOutlined />
+          },
+          {
+            label: "角色管理",
+            key: "roleManagement",
+            icon: <IdcardOutlined />
+          },
+          {
+            label: "员工管理",
+            key: "employeeManagement",
+            icon: <UserSwitchOutlined />
+          }
+        ]
+      },
+      {
+        label: "会议室管理",
+        key: "meetingRoomManagementParent",
+        icon: <BankOutlined />,
+        children: [
+          {
+            label: "设备管理",
+            key: "deviceManagement",
+            icon: <DesktopOutlined />
+          },
+          {
+            label: "会议室管理",
+            key: "meetingRoomManagementChild",
+            icon: <VideoCameraOutlined />
+          },
+          {
+            label: "参数管理",
+            key: "parameterManagement",
+            icon: <SettingOutlined />
+          },
+          {
+            label: "设备保修管理",
+            key: "deviceRepairManagement",
+            icon: <ToolOutlined />
+          },
+          {
+            label: "门禁权限管理",
+            key: "doorAccessPermissionManagement",
+            icon: <SecurityScanOutlined />
+          },
+          {
+            label: "文件管理",
+            key: "fileManagement",
+            icon: <FileTextOutlined />
+          }
+        ]
+      },
+      {
+        label: "面部信息管理",
+        key: "faceInfoManagement",
+        icon: <SmileOutlined />
+      },
+      {
+        label: "会议管理",
+        key: "meetingManagementParent",
+        icon: <CalendarOutlined />,
+        children: [
+          {
+            label: "会议管理",
+            key: "meetingManagementChild",
+            icon: <ScheduleOutlined />
+          },
+          {
+            label: "每周例会管理",
+            key: "weeklyMeetingManagement",
+            icon: <ReloadOutlined />
+          },
+          {
+            label: "预定会议",
+            key: "orderMeeting",
+            icon: <CheckCircleOutlined />
+          }
+        ]
+      },
+      {
+        label: "数据分析",
+        key: "dataAnalysis",
+        icon: <BarChartOutlined />
+      },
+      userMenuItem
+    ];
+
+    const noramlModelItems: MenuItem[] = [
       {
         label: '会议管理',
         key: 'meetingManagement',
@@ -116,18 +256,7 @@ const Navbar: React.FC = () => {
           }
         ]
       },
-      {
-        label: username,
-        key: "username",
-        icon: <UserOutlined />,
-        children: [
-          {
-            label: "退出",
-            key: "logout",
-            icon: <LogoutOutlined />
-          }
-        ]
-      }
+      userMenuItem
     ];
 
     const [current, setCurrent] = useState('meetingManagement');
@@ -137,6 +266,10 @@ const Navbar: React.FC = () => {
       if (e.key == "logout") {
         localStorage.removeItem("token");
         window.location.replace("/");
+      } else if (e.key == "normalMode") {
+        setIsNoramlMode(true);
+      } else if (e.key == "adminMode") {
+        setIsNoramlMode(false);
       }
     };
 
@@ -144,11 +277,11 @@ const Navbar: React.FC = () => {
         <Header style={{ position: 'fixed', zIndex: 1, width: '100%', backgroundColor: 'white', display: 'flex', alignItems: 'center', justifyContent: 'space-between'  }}>
             <Link to="/" style={{ fontSize: "20px", fontWeight: "bold", color: "black", display: "flex", alignItems: "center"}}>
                 <img src={meetingLogo} alt="logo" className="meetingLogo" />
-                会议管理系统
+                会议管理系统{isNoramlMode ? "" : " - 管理员模式"}
             </Link>
             {
               isAuthenticated &&
-              <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />
+              <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={ isNoramlMode ? noramlModelItems : adminModelItems } disabledOverflow={true} />
             }
         </Header>
     )

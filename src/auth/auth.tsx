@@ -17,6 +17,7 @@ export interface AuthContextType {
   isAuthenticated: boolean;
   userId: string;
   username: string;
+  isAdmin: boolean;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);

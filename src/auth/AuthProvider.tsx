@@ -7,6 +7,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [userId, setUserId] = useState('')
     const [username, setUsername] = useState('')
     const [isLoading, setIsLoading] = useState(true);
+    const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
         const initializeAuth = async () => {
@@ -21,6 +22,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                         setIsAuthenticated(true);
                         setUserId(response.data.userId);
                         setUsername(response.data.username);
+                        setIsAdmin(response.data.isAdmin);
                     }
                 }
             } catch (error) {
@@ -34,7 +36,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, userId, username, isLoading }}>
+        <AuthContext.Provider value={{ isAuthenticated, userId, username, isLoading, isAdmin }}>
             {children}
         </AuthContext.Provider>
     );
