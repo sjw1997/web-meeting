@@ -1,5 +1,5 @@
 import { Header } from "antd/es/layout/layout";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import meetingLogo from "../assets/meetingLogo.png"
 import "../css/Navbar.css"
 import type { MenuProps } from 'antd';
@@ -35,6 +35,7 @@ import { useAuth } from "../auth/auth";
 const Navbar: React.FC = () => {
     type MenuItem = Required<MenuProps>['items'][number];
 
+    const navigate = useNavigate();
     const { isAuthenticated, username, isAdmin } = useAuth()
     const [ isNoramlMode, setIsNoramlMode ] = useState(true);
 
@@ -263,13 +264,20 @@ const Navbar: React.FC = () => {
 
     const onClick: MenuProps['onClick'] = (e) => {
       setCurrent(e.key);
-      if (e.key == "logout") {
-        localStorage.removeItem("token");
-        window.location.replace("/");
-      } else if (e.key == "normalMode") {
-        setIsNoramlMode(true);
-      } else if (e.key == "adminMode") {
-        setIsNoramlMode(false);
+      switch (e.key) {
+        case "logout":
+          localStorage.removeItem("token");
+          window.location.replace("/");
+          break;
+        case "normalMode":
+          setIsNoramlMode(true);
+          break;
+        case "adminMode":
+          setIsNoramlMode(false);
+          break;
+        case "departmentManagement":
+          navigate("/department");
+          break;
       }
     };
 
