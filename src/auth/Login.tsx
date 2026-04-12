@@ -3,7 +3,6 @@ import { Form, Input, Button, Card, Row, Col, Typography, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { login, type LoginForm } from './auth';
-import RootLayout from '../components/RootLayout';
 
 const { Title } = Typography;
 
@@ -35,7 +34,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <RootLayout>
+    <>
       {contextHolder}
       <Row justify="center" align="middle" style={{ height: '80vh' }}>
         <Col xs={20} sm={16} md={12} lg={8}>
@@ -73,7 +72,7 @@ const Login: React.FC = () => {
             </Card>
         </Col>
       </Row>
-    </RootLayout>
+    </>
   );
 };
 
