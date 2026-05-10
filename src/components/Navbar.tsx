@@ -302,6 +302,12 @@ const Navbar: React.FC = () => {
         case "meetingRoomManagementChild":
           navigate("/meetingRoomManagementParent/meetingRoomManagementChild");
           break;
+        case "deviceManagement":
+          navigate("/meetingRoomManagementParent/deviceManagement");
+          break;
+        case "departmentManagement":
+          navigate("/userManagement/departmentManagement");
+          break;
       }
     };
 
