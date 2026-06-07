@@ -1,32 +1,36 @@
-import React, { useState } from 'react';
-import { Form, Input, Button, Card, Row, Col, Typography, message } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import React, { useEffect, useState } from 'react';
+import { Form, Input, Button, Card, Row, Col, Typography, message, Select } from 'antd';
+import { UserOutlined, LockOutlined, PhoneOutlined, IdcardOutlined, SolutionOutlined, ApartmentOutlined  } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { login } from './auth';
+import type { DepartmentInfo } from '../user/DepartmentManagement';
 
 const { Title } = Typography;
 
-export interface RegisterForm {
-  username: string;
-  password: string;
-  confirmPassword: string;
-}
-
 const Register: React.FC = () => {
   const [loading, setLoading] = useState(false);
+  const [departments, setDepartments] = useState<DepartmentInfo[]>([]);
   const [messageApi, contextHolder] = message.useMessage();
 
-  const onFinish = async (values: RegisterForm) => {
+  const [form] = Form.useForm();
+
+
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      const departmentResponse = await axios.get('/api/department/get');
+      setDepartments(departmentResponse.data.departments);
+    };
+    fetchDepartments();
+  }, []);
+
+  const onFinish = async () => {
+    const values = await form.validateFields();
     console.log('Received values of form: ', values);
     setLoading(true);
     
     try {
-      const response = await axios.post('/api/register', {
-        username: values.username,
-        password: values.password,
-        confirmPassword: values.confirmPassword
-      });
+      const response = await axios.post('/api/register', values);
       
       console.log('Register response:', response.data);
 
@@ -86,10 +90,11 @@ const Register: React.FC = () => {
             <Card>
             <Title level={2} style={{ textAlign: 'center' }}>用户注册</Title>
             <Form
-                name="normal_register"
-                className="register-form"
-                initialValues={{ }}
-                onFinish={onFinish}
+              form={form}
+              name="normal_register"
+              className="register-form"
+              initialValues={{ }}
+              onFinish={onFinish}
             >
                 <Form.Item
                 name="username"
@@ -136,6 +141,26 @@ const Register: React.FC = () => {
                     type="password"
                     placeholder="确认密码"
                 />
+                </Form.Item>
+
+                <Form.Item name="name" rules={[{ required: true, message: '请输入姓名!' }]}>
+                  <Input prefix={<IdcardOutlined className="site-form-item-icon" />} placeholder="姓名" />
+                </Form.Item>
+
+                <Form.Item name="workNum" rules={[{ required: true, message: '请输入工号!' }]}>
+                  <Input prefix={<SolutionOutlined className="site-form-item-icon" />} placeholder="工号" />
+                </Form.Item>
+
+                <Form.Item name="phoneNum" rules={[{ required: true, message: '请输入手机号!' }]}>
+                  <Input prefix={<PhoneOutlined className="site-form-item-icon" />} placeholder="手机号" />
+                </Form.Item>
+
+                <Form.Item name="departmentId" rules={[{ required: true, message: '请选择部门!' }]}>
+                  <Select
+                    placeholder="部门"
+                    suffixIcon={<ApartmentOutlined style={{ color: '#bfbfbf' }} />} // 使用部门图标替换默认箭头
+                    options={departments.map(department => ({ label: department.name, value: department.id }))}
+                  />
                 </Form.Item>
 
                 <Form.Item>

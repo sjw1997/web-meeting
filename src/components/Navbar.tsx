@@ -4,7 +4,7 @@ import meetingLogo from "../assets/meetingLogo.png"
 import "../css/Navbar.css"
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { 
   UserOutlined,
   CalendarOutlined,
@@ -56,8 +56,13 @@ const findKeyInItems = (items: MenuItem[], paths: string[], index: number): stri
 const Navbar: React.FC = () => {
     const { isAuthenticated, username, isAdmin } = useAuth()
     const [ isNormalMode, setIsNormalMode ] = useState(true);
+    const isNormalModeValue = useRef(true);
     const navigate = useNavigate();
     const location = useLocation();
+
+    useEffect(() => {
+      isNormalModeValue.current = isNormalMode;
+    }, [isNormalMode]);
 
     const { adminModelItems, normalModelItems } = useMemo(() => {
       const userMenuItem = {
@@ -294,10 +299,14 @@ const Navbar: React.FC = () => {
           window.location.replace("/");
           break;
         case "normalMode":
+          if (isNormalMode) return;
           setIsNormalMode(true);
+          navigate("/");
           break;
         case "adminMode":
+          if (!isNormalMode) return;
           setIsNormalMode(false);
+          navigate("/");
           break;
         case "meetingRoomManagementChild":
           navigate("/meetingRoomManagementParent/meetingRoomManagementChild");
@@ -307,6 +316,9 @@ const Navbar: React.FC = () => {
           break;
         case "departmentManagement":
           navigate("/userManagement/departmentManagement");
+          break;
+        case "employeeManagement":
+          navigate("/userManagement/employeeManagement");
           break;
       }
     };
@@ -320,10 +332,10 @@ const Navbar: React.FC = () => {
       const subPaths = path.split('/').slice(1); // 去掉第一个空字符串
 
       let foundKey: string | undefined = undefined
-      let foundInNormalMode = isNormalMode;
-      foundKey = findKeyInItems(isNormalMode ? normalModelItems : adminModelItems, subPaths, 0);
+      let foundInNormalMode = isNormalModeValue.current;
+      foundKey = findKeyInItems(isNormalModeValue.current ? normalModelItems : adminModelItems, subPaths, 0);
       if (!foundKey) {
-        if (isNormalMode) {
+        if (isNormalModeValue.current) {
           if (isAdmin) {
             foundKey = findKeyInItems(adminModelItems, subPaths, 0);
           }
@@ -339,19 +351,19 @@ const Navbar: React.FC = () => {
         setIsNormalMode(foundInNormalMode);
         setCurrent(foundKey);
       }
-    }, [location.pathname, isNormalMode, normalModelItems, adminModelItems, isAdmin]);
+    }, [location.pathname, normalModelItems, adminModelItems, isAdmin]);
 
     return (
-        <Header style={{ position: 'fixed', zIndex: 1, width: '100%', backgroundColor: 'white', display: 'flex', alignItems: 'center', justifyContent: 'space-between'  }}>
-            <Link to="/" style={{ fontSize: "20px", fontWeight: "bold", color: "black", display: "flex", alignItems: "center"}}>
-                <img src={meetingLogo} alt="logo" className="meetingLogo" />
-                会议管理系统{isNormalMode ? "" : " - 管理员模式"}
-            </Link>
-            {
-              isAuthenticated &&
-              <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={ isNormalMode ? normalModelItems : adminModelItems } disabledOverflow={true} />
-            }
-        </Header>
+      <Header style={{ position: 'fixed', zIndex: 1, width: '100%', backgroundColor: 'white', display: 'flex', alignItems: 'center', justifyContent: 'space-between'  }}>
+        <Link to="/" style={{ fontSize: "20px", fontWeight: "bold", color: "black", display: "flex", alignItems: "center"}}>
+            <img src={meetingLogo} alt="logo" className="meetingLogo" />
+            会议管理系统{isNormalMode ? "" : " - 管理员模式"}
+        </Link>
+        {
+          isAuthenticated &&
+          <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={ isNormalMode ? normalModelItems : adminModelItems } disabledOverflow={true} />
+        }
+      </Header>
     )
 };
 

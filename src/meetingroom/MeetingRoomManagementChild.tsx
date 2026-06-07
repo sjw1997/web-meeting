@@ -216,7 +216,7 @@ const MeetingRoomManagementChild: React.FC = () => {
             <Button type="primary" onClick={handleAdd}>添加会议室</Button>
           </div>
 
-          <Table dataSource={dataSource} columns={columns} rowKey="id"/>;
+          <Table dataSource={dataSource} columns={columns} rowKey="id"/>
         </Col>
       </Row>
 

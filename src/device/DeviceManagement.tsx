@@ -135,7 +135,7 @@ const DeviceManagement: React.FC = () => {
             <Button type="primary" onClick={handleAdd}>添加设备</Button>
           </div>
 
-          <Table dataSource={dataSource} columns={columns} rowKey="id"/>;
+          <Table dataSource={dataSource} columns={columns} rowKey="id"/>
         </Col>
       </Row>
 

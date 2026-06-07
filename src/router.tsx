@@ -8,6 +8,7 @@ import MeetingRoomManagementChild from "./meetingroom/MeetingRoomManagementChild
 import RootLayout from "./components/RootLayout.tsx";
 import DeviceManagement from "./device/DeviceManagement.tsx";
 import DepartmentManagement from "./user/DepartmentManagement.tsx";
+import EmployeeManagement from "./user/EmployeeManagement.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -45,6 +46,10 @@ export const router = createBrowserRouter([
           {
             path: "departmentManagement",
             element: <ProtectedRoute><DepartmentManagement /></ProtectedRoute>,
+          },
+          {
+            path: "employeeManagement",
+            element: <ProtectedRoute><EmployeeManagement /></ProtectedRoute>,
           }
         ]
       }

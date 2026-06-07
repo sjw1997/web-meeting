@@ -135,7 +135,7 @@ const DepartmentManagement: React.FC = () => {
             <Button type="primary" onClick={handleAdd}>添加部门</Button>
           </div>
 
-          <Table dataSource={dataSource} columns={columns} rowKey="id"/>;
+          <Table dataSource={dataSource} columns={columns} rowKey="id"/>
         </Col>
       </Row>
 
