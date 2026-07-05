@@ -1,4 +1,4 @@
-import { Col, Form, Input, Modal, Row, Select, Table, Typography, message } from 'antd'; 
+import { Button, Col, Form, Input, Modal, Row, Select, Table, Typography, message } from 'antd'; 
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import type { ColumnsType } from 'antd/es/table'; // 引入类型定义
@@ -18,6 +18,7 @@ const EmployeeManagement: React.FC = () => {
   const [departments, setDepartments] = useState<DepartmentInfo[]>([]);
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState<'add' | 'edit'>('add');
 
   const [form] = Form.useForm();
 
@@ -97,27 +98,39 @@ const EmployeeManagement: React.FC = () => {
     })
   }
 
-  const handleEditOk = async () => {
+  const handleAddOrEditOk = async () => {
     try {
       const values = await form.validateFields();
-      const response = await axios.put('/api/user/update', values);
-      if (response.data.success) {
-        setIsModalOpen(false);
-        fetchData();
-        messageApi.success('编辑员工成功');
-      } else {
-        messageApi.error(`${response.data.message} 编辑员工失败`);
+      if (modalMode === 'add') {
+        const response = await axios.post('/api/user/add', values);
+        if (response.data.success) {
+          setIsModalOpen(false);
+          fetchData();
+          messageApi.success('添加员工成功');
+        } else {
+          messageApi.error(`${response.data.message} 添加员工失败`);
+        }
+      } else if (modalMode === 'edit') {
+        const response = await axios.put('/api/user/update', values);
+        if (response.data.success) {
+          setIsModalOpen(false);
+          fetchData();
+          messageApi.success('编辑员工成功');
+        } else {
+          messageApi.error(`${response.data.message} 编辑员工失败`);
+        }
       }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
-        messageApi.error(`${error.response?.data?.message || '编辑员工失败'}`);
+        messageApi.error(`${error.response?.data?.message || '添加/编辑员工失败'}`);
       } else if (error instanceof Error) {
-        messageApi.error(`${error.message || '编辑员工失败'}`);
+        messageApi.error(`${error.message || '添加/编辑员工失败'}`);
       }
     }
   }
 
   const handleEdit = (record: EmployeeInfo) => {
+    setModalMode('edit');
     form.setFieldsValue({
       id: record.id,
       name: record.name,
@@ -126,6 +139,53 @@ const EmployeeManagement: React.FC = () => {
       departmentId: record.departmentId
     });
     setIsModalOpen(true);
+  }
+
+  const handleAdd = () => { 
+    setModalMode('add');
+    form.resetFields();
+    setIsModalOpen(true);
+  }
+
+  const handleBatchAdd = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.onchange = async () => { 
+      const file = input.files?.[0];
+      if (file) {
+        const formData = new FormData();
+        formData.append('file', file);
+        try {
+          const response = await axios.post('/api/user/import', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+          if (response.data.success) {
+            messageApi.success(response.data.message);
+            fetchData();
+          } else {
+            messageApi.error(`${response.data.message}`);
+          }
+        } catch (error: unknown) {
+          if (axios.isAxiosError(error)) {
+            messageApi.error(`${error.response?.data?.message || '导入失败'}`);
+          } else if (error instanceof Error) {
+            messageApi.error(`${error.message || '导入失败'}`);
+          }
+        }
+      }
+    };
+    input.click();
+  }
+
+  const handleDownloadTemplate = () => {
+    axios.get('/api/download/insertDemo.xls', { responseType: 'blob' })
+      .then(response => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', '员工导入模板.xls');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      })
   }
 
 
@@ -142,6 +202,11 @@ const EmployeeManagement: React.FC = () => {
         <Col span={20}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
             <Title level={3}>员工管理</Title>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <Button type="primary" onClick={handleAdd}>单个添加</Button>
+              <Button type="primary" onClick={handleBatchAdd}>表格添加</Button>
+              <Button type="primary" onClick={handleDownloadTemplate}>下载表格案例</Button>
+            </div>
           </div>
 
           <Table dataSource={dataSource} columns={columns} rowKey="id"/>
@@ -151,7 +216,7 @@ const EmployeeManagement: React.FC = () => {
       <Modal
         title="编辑员工" open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
-        onOk={handleEditOk}
+        onOk={handleAddOrEditOk}
         okText="确定"
         cancelText="取消"
       >
